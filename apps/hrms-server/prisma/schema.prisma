@@ -1,0 +1,69 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Employee {
+  attendances   Attendance[]
+  createdAt     DateTime     @default(now())
+  dateOfJoining DateTime?
+  email         String?
+  id            String       @id @default(cuid())
+  name          String?
+  position      String?
+  salaries      Salary[]
+  updatedAt     DateTime     @updatedAt
+}
+
+model Holiday {
+  createdAt DateTime  @default(now())
+  date      DateTime?
+  id        String    @id @default(cuid())
+  name      String?
+  updatedAt DateTime  @updatedAt
+}
+
+model Salary {
+  amount     Float?
+  createdAt  DateTime  @default(now())
+  employee   Employee? @relation(fields: [employeeId], references: [id])
+  employeeId String?
+  id         String    @id @default(cuid())
+  payslips   Payslip[]
+  updatedAt  DateTime  @updatedAt
+}
+
+model Payslip {
+  createdAt DateTime  @default(now())
+  date      DateTime?
+  id        String    @id @default(cuid())
+  salary    Salary?   @relation(fields: [salaryId], references: [id])
+  salaryId  String?
+  updatedAt DateTime  @updatedAt
+}
+
+model Attendance {
+  createdAt  DateTime  @default(now())
+  date       DateTime?
+  employee   Employee? @relation(fields: [employeeId], references: [id])
+  employeeId String?
+  id         String    @id @default(cuid())
+  status     String?
+  updatedAt  DateTime  @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
